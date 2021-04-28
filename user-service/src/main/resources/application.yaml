@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: user-service
+    
+server:
+  port: ${PORT:9000}
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0
