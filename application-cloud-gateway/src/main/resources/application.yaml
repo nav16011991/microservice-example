@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: application-cloud-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: UserService
+          uri: http://localhost:9000/
+          predicates:
+            - Path=/user-service/**
+        - id: ProductService
+          uri: http://localhost:9001/
+          predicates:
+            - Path=/product-service/**
+        - id: OrderService
+          uri: http://localhost:9002/
+          predicates:
+            - Path=/order-service/**
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0
