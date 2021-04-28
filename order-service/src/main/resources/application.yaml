@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: order-service
+
+server:
+  port: ${PORT:9002}
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0
