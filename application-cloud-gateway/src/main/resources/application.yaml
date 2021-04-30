@@ -10,15 +10,15 @@ spring:
         - id: UserService
           uri: http://localhost:9000/
           predicates:
-            - Path=/user-service/**
+            - Path=/user/**
         - id: ProductService
           uri: http://localhost:9001/
           predicates:
-            - Path=/product-service/**
+            - Path=/product/**
         - id: OrderService
           uri: http://localhost:9002/
           predicates:
-            - Path=/order-service/**
+            - Path=/order/**
 
 eureka:
   client:
