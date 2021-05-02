@@ -1,0 +1,4 @@
+
+INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE) VALUES (1, 'Shampoo', 'Product to wash hair', 20);
+INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE) VALUES (2, 'Comb', 'Product to comb hair', 5);
+INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE) VALUES (3, 'Soap', 'Product to wash body', 10);
