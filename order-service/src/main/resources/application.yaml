@@ -1,14 +1,26 @@
 spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    password: ''
+    url: jdbc:h2:file:~/order-db
+    username: sa
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   application:
     name: order-service
 
+
 server:
   port: ${PORT:9002}
+  servlet:
+    context-path: /order
 
 eureka:
   client:
     registerWithEureka: true
-    fetchRegistry: false
+    fetchRegistry: true
     server:
       waitTimeInMsWhenSyncEmpty: 0
 
