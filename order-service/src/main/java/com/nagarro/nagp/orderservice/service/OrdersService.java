@@ -11,6 +11,8 @@ import com.nagarro.nagp.orderservice.service.model.UserDTO;
 import com.nagarro.nagp.productservice.service.model.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,10 @@ public class OrdersService {
 
     @Autowired
     private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private CircuitBreakerFactory circuitBreakerFactory;
+
 
 
     public List<OrdersDTO> getAll() {
@@ -82,13 +88,20 @@ public class OrdersService {
 
     private UserDTO getUser(Long userId) {
         try {
-            List<ServiceInstance> instances = discoveryClient.getInstances("USER-SERVICE");
-            String userServiceUrl = instances.get(0).getUri()+"/user/"+ userId;
-            ResponseEntity<String> response = restTemplate.exchange(userServiceUrl,
-                    HttpMethod.GET,
-                    null,
-                    String.class);
-            return new Gson().fromJson(response.getBody(), UserDTO.class);
+            CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+
+            return circuitBreaker.run(() -> {
+                List<ServiceInstance> instances = discoveryClient.getInstances("USER-SERVICE");
+                String userServiceUrl = instances.get(0).getUri()+"/user/"+ userId;
+                ResponseEntity<String> response = restTemplate.exchange(userServiceUrl,
+                        HttpMethod.GET,
+                        null,
+                        String.class);
+                return new Gson().fromJson(response.getBody(), UserDTO.class);
+            }, throwable -> {
+                return UserDTO.builder().username("Anonymous").build();
+            });
+
         } catch (RestClientException ex) {
             throw ex;
         }
