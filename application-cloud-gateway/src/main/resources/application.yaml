@@ -16,14 +16,14 @@ spring:
 #          predicates:
 #            - Path=/product/**
         - id: OrderService
-          uri: http://localhost:9002/
+          uri: lb://order-service/
           predicates:
             - Path=/order/**
 
 eureka:
   client:
     registerWithEureka: true
-    fetchRegistry: false
+    fetchRegistry: true
     server:
       waitTimeInMsWhenSyncEmpty: 0
 
