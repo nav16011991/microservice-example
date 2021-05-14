@@ -10,7 +10,16 @@ spring:
       path: /h2-console
   application:
     name: user-service
-    
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: localhost
+      port: 6831
+    log-spans: true
+
+
+
 server:
   port: ${PORT:9000}
   servlet:
