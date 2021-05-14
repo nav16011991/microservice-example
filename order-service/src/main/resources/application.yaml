@@ -11,6 +11,12 @@ spring:
   application:
     name: order-service
 
+opentracing:
+  jaeger:
+    udp-sender:
+      host: localhost
+      port: 6831
+    log-spans: true
 
 server:
   port: ${PORT:9002}
