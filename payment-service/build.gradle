@@ -29,10 +29,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.1.2'
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+	implementation 'org.axonframework:axon-spring-boot-starter:4.5'
+	implementation 'org.springframework.boot:spring-boot-autoconfigure'
+	implementation 'com.nagarro.nagp:core-event-library:0.0.1-SNAPSHOT'
 	implementation 'org.flywaydb:flyway-core'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
+	compile 'com.google.code.gson:gson:2.8.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
