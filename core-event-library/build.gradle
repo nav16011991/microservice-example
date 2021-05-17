@@ -1,0 +1,29 @@
+plugins {
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+
+group = 'com.nagarro.nagp'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.axonframework:axon-modelling:4.5'
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+
+}
+
+test {
+	useJUnitPlatform()
+}

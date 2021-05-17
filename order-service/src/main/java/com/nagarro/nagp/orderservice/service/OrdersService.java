@@ -1,14 +1,20 @@
 package com.nagarro.nagp.orderservice.service;
 
 import com.google.gson.Gson;
+import com.nagarro.nagp.coreeventlibrary.commands.CreateOrderCommand;
+import com.nagarro.nagp.coreeventlibrary.events.OrderCreatedEvent;
 import com.nagarro.nagp.orderservice.persistent.model.OrdersEntity;
 import com.nagarro.nagp.orderservice.persistent.model.OrdersProductEntity;
 import com.nagarro.nagp.orderservice.persistent.repository.OrdersProductRepository;
 import com.nagarro.nagp.orderservice.persistent.repository.OrdersRepository;
+import com.nagarro.nagp.orderservice.service.model.OrderStatus;
 import com.nagarro.nagp.orderservice.service.model.OrdersDTO;
 import com.nagarro.nagp.orderservice.service.model.OrdersProductDTO;
 import com.nagarro.nagp.orderservice.service.model.UserDTO;
 import com.nagarro.nagp.productservice.service.model.ProductDTO;
+import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventhandling.EventMessage;
+import org.axonframework.eventhandling.tokenstore.jdbc.GenericTokenTableFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -21,10 +27,13 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.axonframework.eventhandling.GenericEventMessage.asEventMessage;
 
 @Service
 public class OrdersService {
@@ -44,7 +53,8 @@ public class OrdersService {
     @Autowired
     private CircuitBreakerFactory circuitBreakerFactory;
 
-
+    @Autowired
+    private EventBus eventBus;
 
     public List<OrdersDTO> getAll() {
         return ordersRepository.findAll().stream().map(this::covnertToDTO).collect(Collectors.toList());
@@ -113,6 +123,7 @@ public class OrdersService {
     }
 
     public void save(OrdersDTO ordersDTO) {
+
         Map<Long, ProductDTO> productDTOMap = ordersDTO.getOrdersProductDTOList().stream()
                 .map(ordersProduct -> this.getProduct(ordersProduct.getProduct().getId()))
                 .collect(Collectors.toMap(ProductDTO::getId,
@@ -134,6 +145,12 @@ public class OrdersService {
         ).collect(Collectors.toList());
 
         ordersProductRepository.saveAll(ordersProductList);
+
+        EventMessage<CreateOrderCommand> event = asEventMessage(new OrderCreatedEvent(ordersEntity.getId().toString(),
+                BigDecimal.valueOf(ordersEntity.getTotalAmount()), "INR", String.valueOf(OrderStatus.CREATED)));
+
+        this.eventBus.publish(event);
+
     }
 
 
